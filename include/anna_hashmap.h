@@ -1,5 +1,5 @@
 #pragma once
-#include <list>
+#include <forward_list>
 #include <stdexcept>
 #include <utility>
 #include <vector>
@@ -25,7 +25,8 @@ public:
         // префиксный
         iterator& operator++() {
             ++position_;
-            while (position_ >= hashmap_->table_[bucket_].size()) {
+            while (bucket_ < hashmap_->bucket_sizes_.size() &&
+                   position_ >= hashmap_->bucket_sizes_[bucket_]) {
                 ++bucket_;
                 position_ = 0;
             }
@@ -35,11 +36,7 @@ public:
         // постфиксный
         iterator operator++(int) {
             iterator copy(*this);
-            ++position_;
-            while (position_ >= hashmap_->table_[bucket_].size()) {
-                ++bucket_;
-                position_ = 0;
-            }
+            ++(*this);
             return copy;
         }
 
@@ -68,7 +65,10 @@ public:
         size_t position_;
     };
 
-    anna_hashmap() : size_(0), table_(DEFAULT_TABLE_SIZE) {}
+    anna_hashmap()
+        : size_(0),
+          table_(DEFAULT_TABLE_SIZE),
+          bucket_sizes_(DEFAULT_TABLE_SIZE) {}
 
     iterator begin() {
         if (size_ == 0)
@@ -87,6 +87,7 @@ public:
 
     void clear() noexcept {
         table_.assign(DEFAULT_TABLE_SIZE);
+        bucket_sizes_.assign(DEFAULT_TABLE_SIZE, 0);
         size_ = 0;
     }
 
@@ -106,21 +107,25 @@ public:
             ++position;
         }
 
-        table_[bucket].push_back(value);
+        table_[bucket].push_front(value);
         ++size_;
-        return {iterator(this, bucket, table_[bucket].size() - 1), true};
+        ++bucket_sizes_[bucket];
+        return {iterator(this, bucket, 0), true};
     }
 
     size_t erase(const K& key) {
         const unsigned bucket = anna_hash<K>::hash(key) % table_.size();
 
+        auto before_it = table_[bucket].before_begin();
         for (auto it = table_[bucket].begin(); it != table_[bucket].end(); ++it)
         {
             if (it->first == key) {
-                table_[bucket].erase(it);
+                table_[bucket].erase_after(before_it);
                 --size_;
+                --bucket_sizes_[bucket];
                 return 1;
             }
+            ++before_it;
         }
         return 0;
     }
@@ -147,5 +152,6 @@ public:
 
 private:
     size_t size_;
-    std::vector<std::list<std::pair<const K, V>>> table_;
+    std::vector<std::forward_list<std::pair<const K, V>>> table_;
+    std::vector<size_t> bucket_sizes_;
 };

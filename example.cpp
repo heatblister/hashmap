@@ -23,7 +23,7 @@ int main()
     m2.insert({"two", 2});
     m2.insert({"three", 3});
     m2.insert({"four", 4});
-    for (auto it = m2.begin(); it != m2.end(); ++it) {
+    for (auto it = m2.begin(); it != m2.end(); it++) {
         cout << it->first << " " << it->second << endl;
     }
 
