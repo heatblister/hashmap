@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <unordered_map>
 #include <vector>
 #include "anna_hashmap.h"
 
@@ -18,8 +19,16 @@ int main()
     cout << m.size() << endl;
 
     anna_hashmap<std::string, int> m2;
-    m2.insert({"ololo", 17});
-    cout << m2.at("ololo") << endl;
+    m2.insert({"one", 1});
+    m2.insert({"two", 2});
+    m2.insert({"three", 3});
+    m2.insert({"four", 4});
+    for (auto it = m2.begin(); it != m2.end(); ++it) {
+        cout << it->first << " " << it->second << endl;
+    }
+
+    auto info = m2.insert({"one", 101});
+    cout << info.first->second << endl;
 
     return 0;
 }
