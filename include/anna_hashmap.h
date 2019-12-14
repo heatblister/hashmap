@@ -96,6 +96,10 @@ public:
         return size_;
     }
 
+    bool empty() const noexcept {
+        return size_ == 0;
+    }
+
     // Для отладки
     size_t buckets_number() const noexcept {
         return table_.size();

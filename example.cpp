@@ -53,6 +53,7 @@ int main()
     }
 
     anna_hashmap<int, int> m6;
+    cout << m6.empty() << " <- 1 if m6 is empty" << endl;
     cout << "Buckets number at empty table: " << m6.buckets_number() << endl;
     for (int i = 0; i < 80; ++i) {
         m6.insert({i, i});
