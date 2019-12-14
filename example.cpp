@@ -30,5 +30,13 @@ int main()
     auto info = m2.insert({"one", 101});
     cout << info.first->second << endl;
 
+    anna_hashmap<std::pair<int,int>, std::string> m3;
+    m3.insert({{4,5},"lalala"});
+    cout << m3.at({4,5}) << endl;
+
+    anna_hashmap<std::array<int,4>, std::vector<std::string>> m4;
+    m4.insert({{13,16,18,10},{"okok","ghghg"}});
+    cout << m4.at({13,16,18,10})[0] << endl;
+
     return 0;
 }

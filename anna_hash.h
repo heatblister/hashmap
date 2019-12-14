@@ -1,4 +1,5 @@
 #pragma once
+#include <array>
 #include <list>
 #include <string>
 #include <utility>
@@ -91,6 +92,26 @@ public:
             h ^= anna_hash<T>::hash(elem);
         }
         return h;
+    }
+};
+
+template <typename T, size_t size>
+class anna_hash<std::array<T, size>> {
+public:
+    static size_t hash(const std::array<T, size>& x) {
+        size_t h = 0;
+        for (const T& elem : x) {
+            h ^= anna_hash<T>::hash(elem);
+        }
+        return h;
+    }
+};
+
+template <typename F, typename S>
+class anna_hash<std::pair<F,S>> {
+public:
+    static size_t hash(const std::pair<F,S>& x) {
+        return anna_hash<F>::hash(x.first) ^ anna_hash<S>::hash(x.second);
     }
 };
 
