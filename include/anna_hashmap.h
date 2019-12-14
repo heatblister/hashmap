@@ -111,6 +111,20 @@ public:
         return {iterator(this, bucket, table_[bucket].size() - 1), true};
     }
 
+    size_t erase(const K& key) {
+        const unsigned bucket = anna_hash<K>::hash(key) % table_.size();
+
+        for (auto it = table_[bucket].begin(); it != table_[bucket].end(); ++it)
+        {
+            if (it->first == key) {
+                table_[bucket].erase(it);
+                --size_;
+                return 1;
+            }
+        }
+        return 0;
+    }
+
     V& at(const K& key) {
         const unsigned idx =  anna_hash<K>::hash(key) % table_.size();
         for (auto& kv : table_[idx]) {

@@ -27,6 +27,12 @@ int main()
         cout << it->first << " " << it->second << endl;
     }
 
+    cout<< "Deleting element" << endl;
+    m2.erase("four");
+    for (auto it = m2.begin(); it != m2.end(); ++it) {
+        cout << it->first << " " << it->second << endl;
+    }
+
     auto info = m2.insert({"one", 101});
     cout << info.first->second << endl;
 
