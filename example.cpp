@@ -1,19 +1,25 @@
 #include <iostream>
 #include <string>
+#include <vector>
 #include "anna_hash.h"
 
 using std::cout;
 using std::endl;
 
 int main()
-{
-    anna_hashmap<unsigned, std::string> m;
-    m.insert({14u, std::string("ololo")});
-    m.insert({24u, std::string("ururu")});
+{    
+    anna_hashmap<std::vector<int>, std::string> m;
+    m.insert({{1, 2}, "ololo"});
+    m.insert({{3, -4, 0}, "ururu"});
 
-    cout << m.at(14u) << endl;
-    cout << m.at(24u) << endl;
-    // cout << m.at(34u) << endl;
+    cout << m.at({1, 2}) << endl;
+    cout << m.at({3, -4, 0}) << endl;
+
+    cout << m.size() << endl;
+
+    anna_hashmap<std::string, int> m2;
+    m2.insert({"ololo", 17});
+    cout << m2.at("ololo") << endl;
 
     return 0;
 }
