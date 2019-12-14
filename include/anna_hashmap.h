@@ -7,6 +7,7 @@
 #include "anna_hash.h"
 
 const size_t DEFAULT_TABLE_SIZE = 10;
+const size_t MAX_AVERAGE_BUCKET_SIZE = 10;
 
 template <typename K, typename V>
 class anna_hashmap
@@ -95,7 +96,15 @@ public:
         return size_;
     }
 
+    // Для отладки
+    size_t buckets_number() const noexcept {
+        return table_.size();
+    }
+
     std::pair<iterator, bool> insert(const std::pair<K, V>& value) {
+        if (size_ / table_.size() > MAX_AVERAGE_BUCKET_SIZE)
+            rehash(2 * table_.size());
+
         const K& key = value.first;
         const unsigned bucket = anna_hash<K>::hash(key) % table_.size();
 
@@ -110,6 +119,7 @@ public:
         table_[bucket].push_front(value);
         ++size_;
         ++bucket_sizes_[bucket];
+
         return {iterator(this, bucket, 0), true};
     }
 
@@ -151,6 +161,28 @@ public:
     }
 
 private:
+    void rehash(size_t table_size) {
+        std::vector<std::forward_list<std::pair<const K, V>>> t(table_size);
+
+        std::swap(table_, t);
+        bucket_sizes_.assign(table_size, 0);
+        size_ = 0;
+
+        for (const auto& bucket : t) {
+            for (const auto& kv : bucket) {
+                // Не использую тут метод insert, потому что он делает долгую
+                // и ненужную проверку на наличие key в таблице
+
+                const K& key = kv.first;
+                const unsigned bucket = anna_hash<K>::hash(key) % table_size;
+
+                table_[bucket].push_front(kv);
+                ++size_;
+                ++bucket_sizes_[bucket];
+            }
+        }
+    }
+
     size_t size_;
     std::vector<std::forward_list<std::pair<const K, V>>> table_;
     std::vector<size_t> bucket_sizes_;

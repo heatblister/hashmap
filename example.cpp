@@ -52,5 +52,17 @@ int main()
         cout << it->first << " " << it->second << endl;
     }
 
+    anna_hashmap<int, int> m6;
+    cout << "Buckets number at empty table: " << m6.buckets_number() << endl;
+    for (int i = 0; i < 80; ++i) {
+        m6.insert({i, i});
+    }
+    cout << "Buckets number after 80 inserts: " << m6.buckets_number() << endl;
+    for (int i = 80; i < 160; ++i) {
+        m6.insert({i, i});
+    }
+    cout << "Buckets number after another 80 inserts: " << m6.buckets_number()
+         << endl;
+
     return 0;
 }
