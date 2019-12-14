@@ -83,6 +83,24 @@ public:
     }
 };
 
+template <>
+class anna_hash<double>{
+public:
+    static size_t hash(const double& x) {
+        uint64_t const & y = reinterpret_cast<uint64_t const&>(x);
+        return anna_hash<uint64_t>::hash(y);
+    }
+};
+
+template <>
+class anna_hash<float>{
+public:
+    static size_t hash(const float& x) {
+        uint32_t const & y = reinterpret_cast<uint32_t const&>(x);
+        return anna_hash<uint32_t>::hash(y);
+    }
+};
+
 template <typename T>
 class anna_hash<std::vector<T>> {
 public:

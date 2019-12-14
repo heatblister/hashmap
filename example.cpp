@@ -44,5 +44,13 @@ int main()
     m4.insert({{13,16,18,10},{"okok","ghghg"}});
     cout << m4.at({13,16,18,10})[0] << endl;
 
+    anna_hashmap<double,std::string> m5;
+    m5.insert({24.0001,"covfefe"});
+    m5.insert({0.035903,"abyrlavg"});
+
+    for (auto it = m5.begin(); it != m5.end(); it++) {
+        cout << it->first << " " << it->second << endl;
+    }
+
     return 0;
 }
